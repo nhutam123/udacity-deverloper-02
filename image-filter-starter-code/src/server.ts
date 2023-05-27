@@ -32,7 +32,7 @@ import { filterImageFromURL, deleteLocalFiles } from "./util/util";
     const imageUrl = req.query.image_url;
     if (!imageUrl) return res.status(422).send("Image_url is not specified");
     try {
-      const result = await filterImageFromURL(imageUrl);
+      const result = await filterImageFromURL(String(imageUrl));
       res.status(200).send(result);
       await deleteLocalFiles([result]);
     } catch (error) {
