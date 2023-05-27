@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
 import { filterImageFromURL, deleteLocalFiles } from "./util/util";
 
@@ -28,22 +28,22 @@ import { filterImageFromURL, deleteLocalFiles } from "./util/util";
 
   /**************************************************************************** */
 
-  app.get("/filteredimage", async (req, res) => {
-    const imageUrl = req.query.image_url;
+  app.get("/filteredimage", async (req: Request, res: Response) => {
+    const imageUrl: string = String(req.query.image_url);
     if (!imageUrl) return res.status(422).send("Image_url is not specified");
+    console.log("imageUrl", imageUrl);
+
     try {
-      const result = await filterImageFromURL(String(imageUrl));
-      res.status(200).send(result);
-      await deleteLocalFiles([result]);
+      const result: string = await filterImageFromURL(imageUrl);
+      res.status(200).sendFile(result, {}, () => deleteLocalFiles([result]));
     } catch (error) {
       res.status(422).send("Image_url does not exist");
     }
   });
   //! END @TODO1
-
   // Root Endpoint
   // Displays a simple message to the user
-  app.get("/", async (req, res) => {
+  app.get("/", async (req: Request, res: Response) => {
     res.send("try GET /filteredimage?image_url={{}}");
   });
 
